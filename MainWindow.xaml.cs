@@ -249,9 +249,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
-        private int angleLeg(Skeleton skeleton, int angle) {
+        private bool angleLeg(Skeleton skeleton, int angle) {
 
-          int check;
+          bool check = true;
 
 
 
@@ -281,7 +281,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             elbow = (skeleton.Joints[JointType.ElbowLeft].PositionX - skeleton.Joints[JointType.ElbowRight].Position.X) < 0.5;
             wrist = (skeleton.Joints[JointType.WristLeft].PositionX - skeleton.Joints[JointType.WristRight].Position.X) < 0.5;
             hand = (skeleton.Joints[JointType.HandLeft].PositionX - skeleton.Joints[JointType.HandRight].Position.X) < 0.5;
-            int legsPos = angleLeg(skeleton, angle);
+            bool legsPos = angleLeg(skeleton, angle);
 
             // Valid position
             // validPosition
@@ -303,14 +303,14 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             else {
 
               // Left Arm
-              this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
-              this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
-              this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+              this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft, 0);
+              this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft, 0);
+              this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft, 0);
 
               // Right Arm
-              this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
-              this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
-              this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+              this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight, 0);
+              this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight, 0);
+              this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight, 0);
 
             }
 
@@ -365,7 +365,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// <param name="drawingContext">drawing context to draw to</param>
         /// <param name="jointType0">joint to start drawing from</param>
         /// <param name="jointType1">joint to end drawing at</param>
-        private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1)
+        private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1, int valid = 1)
         {
             Joint joint0 = skeleton.Joints[jointType0];
             Joint joint1 = skeleton.Joints[jointType1];
@@ -388,7 +388,10 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             Pen drawPen = this.inferredBonePen;
             if (joint0.TrackingState == JointTrackingState.Tracked && joint1.TrackingState == JointTrackingState.Tracked)
             {
+              if(valid == 1)
                 drawPen = this.trackedBonePen;
+              else
+                drawPen = this.invalidPosition;
             }
 
             drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));

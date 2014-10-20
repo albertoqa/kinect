@@ -283,6 +283,18 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
+
+        private int angleLeg(Skeleton skeleton, int angle) {
+
+          int check;
+
+
+
+          return check;
+
+        }
+
+
         /// <summary>
         /// Draws a skeleton's bones and joints
         /// </summary>
@@ -299,16 +311,17 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
 
-            (skeleton.Joints[JointType.ShoulderLeft].Position.X
+            int angle = 30;
             bool shoulder, elbow, wrist, hand;
-            shoulder = (skeleton.Joints[JointType.ShoulderLeft].PositionX - skeleton.Joints[JointType.ShoulderRight].Position.X) < 0.3;
-            elbow = (skeleton.Joints[JointType.ElbowLeft].PositionX - skeleton.Joints[JointType.ElbowRight].Position.X) < 0.3;
-            wrist = (skeleton.Joints[JointType.WristLeft].PositionX - skeleton.Joints[JointType.WristRight].Position.X) < 0.3;
-            hand = (skeleton.Joints[JointType.HandLeft].PositionX - skeleton.Joints[JointType.HandRight].Position.X) < 0.3;
+            shoulder = (skeleton.Joints[JointType.ShoulderLeft].PositionX - skeleton.Joints[JointType.ShoulderRight].Position.X) < 0.5;
+            elbow = (skeleton.Joints[JointType.ElbowLeft].PositionX - skeleton.Joints[JointType.ElbowRight].Position.X) < 0.5;
+            wrist = (skeleton.Joints[JointType.WristLeft].PositionX - skeleton.Joints[JointType.WristRight].Position.X) < 0.5;
+            hand = (skeleton.Joints[JointType.HandLeft].PositionX - skeleton.Joints[JointType.HandRight].Position.X) < 0.5;
+            int legsPos = angleLeg(skeleton, angle);
 
             // Valid position
             // validPosition
-            if(shoulder && elbow && wrist && hand) {
+            if(shoulder && elbow && wrist && hand && legsPos) {
 
               // Left Arm
               this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
@@ -322,7 +335,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
             }
 
-            //invalid position
+            //invalid position, paint this part with Red
             else {
 
               // Left Arm

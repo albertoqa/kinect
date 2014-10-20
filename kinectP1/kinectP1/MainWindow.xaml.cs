@@ -89,17 +89,18 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
         /// <summary>
         /// Brush used for drawing joints that are currently inferred
-        /// </summary>        
+        /// </summary>
         private readonly Brush inferredJointBrush = Brushes.Yellow;
 
         /// <summary>
         /// Pen used for drawing bones that are currently tracked
         /// </summary>
         private readonly Pen trackedBonePen = new Pen(Brushes.Green, 6);
+        private readonly Pen validPosition = new Pen(Brushes.Red, 6);
 
         /// <summary>
         /// Pen used for drawing bones that are currently inferred
-        /// </summary>        
+        /// </summary>
         private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1);
 
         /// <summary>
@@ -183,7 +184,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
             // Look through all sensors and start the first connected one.
             // This requires that a Kinect is connected at the time of app startup.
-            // To make your app robust against plug/unplug, 
+            // To make your app robust against plug/unplug,
             // it is recommended to use KinectSensorChooser provided in Microsoft.Kinect.Toolkit (See components in Toolkit Browser).
             foreach (var potentialSensor in KinectSensor.KinectSensors)
             {
@@ -298,15 +299,43 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
 
-            // Left Arm
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+            (skeleton.Joints[JointType.ShoulderLeft].Position.X
+            bool shoulder, elbow, wrist, hand;
+            shoulder = (skeleton.Joints[JointType.ShoulderLeft].PositionX - skeleton.Joints[JointType.ShoulderRight].Position.X) < 0.3;
+            elbow = (skeleton.Joints[JointType.ElbowLeft].PositionX - skeleton.Joints[JointType.ElbowRight].Position.X) < 0.3;
+            wrist = (skeleton.Joints[JointType.WristLeft].PositionX - skeleton.Joints[JointType.WristRight].Position.X) < 0.3;
+            hand = (skeleton.Joints[JointType.HandLeft].PositionX - skeleton.Joints[JointType.HandRight].Position.X) < 0.3;
 
-            // Right Arm
-            this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
-            this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
-            this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+            // Valid position
+            // validPosition
+            if(shoulder && elbow && wrist && hand) {
+
+              // Left Arm
+              this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
+              this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
+              this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+
+              // Right Arm
+              this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
+              this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
+              this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+
+            }
+
+            //invalid position
+            else {
+
+              // Left Arm
+              this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
+              this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
+              this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+
+              // Right Arm
+              this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
+              this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
+              this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+
+            }
 
             // Left Leg
             this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
@@ -317,7 +346,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.DrawBone(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);
             this.DrawBone(skeleton, drawingContext, JointType.KneeRight, JointType.AnkleRight);
             this.DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
- 
+
             // Render Joints
             foreach (Joint joint in skeleton.Joints)
             {
@@ -325,11 +354,11 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
                 if (joint.TrackingState == JointTrackingState.Tracked)
                 {
-                    drawBrush = this.trackedJointBrush;                    
+                    drawBrush = this.trackedJointBrush;
                 }
                 else if (joint.TrackingState == JointTrackingState.Inferred)
                 {
-                    drawBrush = this.inferredJointBrush;                    
+                    drawBrush = this.inferredJointBrush;
                 }
 
                 if (drawBrush != null)
@@ -346,7 +375,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// <returns>mapped point</returns>
         private Point SkeletonPointToScreen(SkeletonPoint skelpoint)
         {
-            // Convert point to depth space.  
+            // Convert point to depth space.
             // We are not using depth directly, but we do want the points in our 640x480 output resolution.
             DepthImagePoint depthPoint = this.sensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skelpoint, DepthImageFormat.Resolution640x480Fps30);
             return new Point(depthPoint.X, depthPoint.Y);

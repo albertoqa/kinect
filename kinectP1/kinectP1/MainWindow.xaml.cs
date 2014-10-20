@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿/*
+Comentario acerca de mi programa
 
+
+
+*/
+
+using System.IO;
+using System.Windows;
+using System.Windows.Media;
 using Microsoft.Kinect;
 
-namespace kinectP1
+namespace Kinect_14
 {
     /// <summary>
     /// Lógica de interacción para MainWindow.xaml
@@ -22,71 +18,10 @@ namespace kinectP1
     public partial class MainWindow : Window
     {
 
-        //KinectSensor kinect;
+        // declaración de constantes y variables
 
-        public MainWindow()
-        {
-            InitializeComponent();
 
-        }
-    }
-}
-
-/*
-
-//------------------------------------------------------------------------------
-// <copyright file="MainWindow.xaml.cs" company="Microsoft">
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
-
-namespace Microsoft.Samples.Kinect.SkeletonBasics
-{
-    using System.IO;
-    using System.Windows;
-    using System.Windows.Media;
-    using Microsoft.Kinect;
-
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
-    {
-        /// <summary>
-        /// Width of output drawing
-        /// </summary>
-        private const float RenderWidth = 640.0f;
-
-        /// <summary>
-        /// Height of our output drawing
-        /// </summary>
-        private const float RenderHeight = 480.0f;
-
-        /// <summary>
-        /// Thickness of drawn joint lines
-        /// </summary>
-        private const double JointThickness = 3;
-
-        /// <summary>
-        /// Thickness of body center ellipse
-        /// </summary>
-        private const double BodyCenterThickness = 10;
-
-        /// <summary>
-        /// Thickness of clip edge rectangles
-        /// </summary>
-        private const double ClipBoundsThickness = 10;
-
-        /// <summary>
-        /// Brush used to draw skeleton center point
-        /// </summary>
-        private readonly Brush centerPointBrush = Brushes.Blue;
-
-        /// <summary>
-        /// Brush used for drawing joints that are currently tracked
-        /// </summary>
-        private readonly Brush trackedJointBrush = new SolidColorBrush(Color.FromArgb(255, 68, 192, 68));
-
+<<<<<<< HEAD
         /// <summary>
         /// Brush used for drawing joints that are currently inferred
         /// </summary>
@@ -111,81 +46,35 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// <summary>
         /// Drawing group for skeleton rendering output
         /// </summary>
-        private DrawingGroup drawingGroup;
+=======
 
-        /// <summary>
-        /// Drawing image that we will display
-        /// </summary>
+>>>>>>> FETCH_HEAD
+        private DrawingGroup drawingGroup;
         private DrawingImage imageSource;
 
-        /// <summary>
-        /// Initializes a new instance of the MainWindow class.
-        /// </summary>
+        // Active Kinect sensor
+        private KinectSensor sensor;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Draws indicators to show which edges are clipping skeleton data
-        /// </summary>
-        /// <param name="skeleton">skeleton to draw clipping information for</param>
-        /// <param name="drawingContext">drawing context to draw to</param>
-        private static void RenderClippedEdges(Skeleton skeleton, DrawingContext drawingContext)
-        {
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Bottom))
-            {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(0, RenderHeight - ClipBoundsThickness, RenderWidth, ClipBoundsThickness));
-            }
 
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Top))
-            {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(0, 0, RenderWidth, ClipBoundsThickness));
-            }
-
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Left))
-            {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(0, 0, ClipBoundsThickness, RenderHeight));
-            }
-
-            if (skeleton.ClippedEdges.HasFlag(FrameEdges.Right))
-            {
-                drawingContext.DrawRectangle(
-                    Brushes.Red,
-                    null,
-                    new Rect(RenderWidth - ClipBoundsThickness, 0, ClipBoundsThickness, RenderHeight));
-            }
-        }
-
-        /// <summary>
-        /// Execute startup tasks
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
+        // start kinect sensor
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
-            // Create the drawing group we'll use for drawing
             this.drawingGroup = new DrawingGroup();
-
-            // Create an image source that we can use in our image control
             this.imageSource = new DrawingImage(this.drawingGroup);
-
-            // Display the drawing using our image control
             Image.Source = this.imageSource;
 
+<<<<<<< HEAD
             // Look through all sensors and start the first connected one.
             // This requires that a Kinect is connected at the time of app startup.
             // To make your app robust against plug/unplug,
             // it is recommended to use KinectSensorChooser provided in Microsoft.Kinect.Toolkit (See components in Toolkit Browser).
+=======
+>>>>>>> FETCH_HEAD
             foreach (var potentialSensor in KinectSensor.KinectSensors)
             {
                 if (potentialSensor.Status == KinectStatus.Connected)
@@ -197,13 +86,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
             if (null != this.sensor)
             {
-                // Turn on the skeleton stream to receive skeleton frames
                 this.sensor.SkeletonStream.Enable();
-
-                // Add an event handler to be called whenever there is new color frame data
                 this.sensor.SkeletonFrameReady += this.SensorSkeletonFrameReady;
 
-                // Start the sensor!
                 try
                 {
                     this.sensor.Start();
@@ -220,11 +105,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
-        /// <summary>
-        /// Execute shutdown tasks
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
+        // stop kinect sensor
         private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (null != this.sensor)
@@ -233,15 +114,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
-        /// <summary>
-        /// Event handler for Kinect sensor's SkeletonFrameReady event
-        /// </summary>
-        /// <param name="sender">object sending the event</param>
-        /// <param name="e">event arguments</param>
-        private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
-        {
-            Skeleton[] skeletons = new Skeleton[0];
 
+<<<<<<< HEAD
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
             {
                 if (skeletonFrame != null)
@@ -453,3 +327,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 }
 
 */
+=======
+
+    }
+}
+>>>>>>> FETCH_HEAD

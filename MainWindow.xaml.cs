@@ -246,6 +246,16 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
+        private int angleLeg(Skeleton skeleton, int angle) {
+
+          int check;
+
+
+
+          return check;
+
+        }
+
         /// <summary>
         /// Draws a skeleton's bones and joints
         /// </summary>
@@ -300,7 +310,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
               this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
 
             }
-            
+
             // Left Leg
             this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
             this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);

@@ -61,6 +61,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// </summary>
         private readonly Pen trackedBonePen = new Pen(Brushes.Green, 6);
 
+        //if the position is invalid, draw the joints in red
+        private readonly Pen invalidPosition = new Pen(Brushes.Red, 6);
+
         /// <summary>
         /// Pen used for drawing bones that are currently inferred
         /// </summary>

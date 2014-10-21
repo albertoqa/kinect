@@ -56,12 +56,21 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// </summary>
         private readonly Brush inferredJointBrush = Brushes.Yellow;
 
+        // brush used for drawing joints that are tracked and in the right position
+        private readonly Brush trackedValidJointBrush = new Brushes.Green;
+
+        // brush used for drawing joints that are tracked and behind the right position
+        private readonly Brush trackedBehJointBrush = new Brushes.Yellow;
+
+        // brush used for drawing joints that are tracken and ahead the right position. Color = turquoise.
+        private readonly Brush trackedAheadJointBrush = new SolidColorBrush(Color.FromRgb(93, 193, 185));
+
         /// <summary>
         /// Pen used for drawing bones that are currently tracked
         /// </summary>
         private readonly Pen trackedBonePen = new Pen(Brushes.Green, 6);
 
-        //if the position is invalid, draw the joints in red
+        //if the position is invalid, draw the bones in red
         private readonly Pen invalidPosition = new Pen(Brushes.Red, 6);
 
         /// <summary>

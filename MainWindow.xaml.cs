@@ -71,7 +71,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         private readonly Pen trackedBonePen = new Pen(Brushes.Green, 6);
 
         //if the position is invalid, draw the bones in red
-        private readonly Pen invalidPosition = new Pen(Brushes.Red, 6);
+        private readonly Pen invalidPositionPen = new Pen(Brushes.Red, 6);
 
         /// <summary>
         /// Pen used for drawing bones that are currently inferred
@@ -285,24 +285,41 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
 
             int angle = 30;
-            bool shoulder, elbow, wrist, hand;
-            shoulder = (skeleton.Joints[JointType.ShoulderLeft].PositionX - skeleton.Joints[JointType.ShoulderRight].Position.X) < 0.5;
-            elbow = (skeleton.Joints[JointType.ElbowLeft].PositionX - skeleton.Joints[JointType.ElbowRight].Position.X) < 0.5;
-            wrist = (skeleton.Joints[JointType.WristLeft].PositionX - skeleton.Joints[JointType.WristRight].Position.X) < 0.5;
-            hand = (skeleton.Joints[JointType.HandLeft].PositionX - skeleton.Joints[JointType.HandRight].Position.X) < 0.5;
             bool legsPos = angleLeg(skeleton, angle);
+
+
+            bool elbowRY = (skeleton.Joints[JointType.ShoulderRight].PositionY - skeleton.Joints[JointType.ElbowRight].PositionY < 0.5);
+            bool elbowRZ = (skeleton.Joints[JointType.ShoulderRight].PositionZ - skeleton.Joints[JointType.ElbowRight].PositionZ < 0.5);
+            if(elbowRY && elbowRZ)
+                this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
+            else
+                this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight, 0);
+
+
+
+
+            if(shoulder) {
+                this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
+                this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
+            }
+            else {
+                this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft, 0);
+                this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight, 0);                
+            }
+
+
+
+
 
             // Valid position
             // validPosition
             if(shoulder && elbow && wrist && hand && legsPos) {
 
               // Left Arm
-              this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
               this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
               this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
 
               // Right Arm
-              this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
               this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
               this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
 
@@ -334,6 +351,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.DrawBone(skeleton, drawingContext, JointType.AnkleRight, JointType.FootRight);
 
             // Render Joints
+            // I have to change this function to include the new colors for the diferent position of the joints
             foreach (Joint joint in skeleton.Joints)
             {
                 Brush drawBrush = null;
@@ -400,7 +418,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
               if(valid == 1)
                 drawPen = this.trackedBonePen;
               else
-                drawPen = this.invalidPosition;
+                drawPen = this.invalidPositionPen;
             }
 
             drawingContext.DrawLine(drawPen, this.SkeletonPointToScreen(joint0.Position), this.SkeletonPointToScreen(joint1.Position));

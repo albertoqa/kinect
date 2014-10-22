@@ -339,41 +339,6 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
             //-----------------------------------------------------------------------
 
-            
-
-
-
-
-
-            // Valid position
-            // validPosition
-            if(shoulder && elbow && wrist && hand && legsPos) {
-
-              // Left Arm
-              this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
-              this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
-
-              // Right Arm
-              this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
-              this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
-
-            }
-
-            //invalid position, paint this part with Red
-            else {
-
-              // Left Arm
-              this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft, 0);
-              this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft, 0);
-              this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft, 0);
-
-              // Right Arm
-              this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight, 0);
-              this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight, 0);
-              this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight, 0);
-
-            }
-
             // Left Leg
             this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
             this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);

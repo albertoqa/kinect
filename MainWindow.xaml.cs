@@ -262,6 +262,12 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
           bool check = true;
 
+          float distA, distB;
+          distA = System.Math.Abs(skeleton.Joints[JointType.HipLeft].Position.Y - skeleton.Joints[JointType.AnkleLeft].Position.Y);
+          distB = System.Math.Abs(skeleton.Joints[JointType.HipLeft].Position.X - skeleton.Joints[JointType.AnkleLeft].Position.X);
+
+          
+
 
 
           return check;
@@ -283,9 +289,6 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.DrawBone(skeleton, drawingContext, JointType.Spine, JointType.HipCenter);
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
-
-            int angle = 30;
-            bool legsPos = angleLeg(skeleton, angle);
 
             //-----------------------------------------------------------------------
             // Control of the right arm
@@ -338,11 +341,19 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft, 0);
 
             //-----------------------------------------------------------------------
+            // Control of the left leg
 
-            // Left Leg
+            int angle = 40;
+            bool legsPos = angleLeg(skeleton, angle);
+
+            // Left Leg - Change this for control my movement
             this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
             this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
             this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
+
+
+            //-----------------------------------------------------------------------
+
 
             // Right Leg
             this.DrawBone(skeleton, drawingContext, JointType.HipRight, JointType.KneeRight);

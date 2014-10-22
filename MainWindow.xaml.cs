@@ -287,6 +287,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             int angle = 30;
             bool legsPos = angleLeg(skeleton, angle);
 
+            //-----------------------------------------------------------------------
+            // Control of the right arm
 
             bool elbowRY = (skeleton.Joints[JointType.ShoulderRight].PositionY - skeleton.Joints[JointType.ElbowRight].PositionY < 0.5);
             bool elbowRZ = (skeleton.Joints[JointType.ShoulderRight].PositionZ - skeleton.Joints[JointType.ElbowRight].PositionZ < 0.5);
@@ -295,17 +297,49 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             else
                 this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight, 0);
 
+            bool wristRY = (skeleton.Joints[JointType.ElbowRight].PositionY - skeleton.Joints[JointType.WristRight].PositionY < 0.5);
+            bool wristRZ = (skeleton.Joints[JointType.ElbowRight].PositionZ - skeleton.Joints[JointType.WristRight].PositionZ < 0.5);
+            if(wristRY && wristRZ)
+                this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
+            else
+                this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight, 0);
 
+            bool handRY = (skeleton.Joints[JointType.WristRight].PositionY - skeleton.Joints[JointType.HandRight].PositionY < 0.5);
+            bool handRZ = (skeleton.Joints[JointType.WristRight].PositionZ - skeleton.Joints[JointType.HandRight].PositionZ < 0.5);
+            if(handRY && handRZ)
+                this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+            else
+                this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight, 0);
 
+            //-----------------------------------------------------------------------
 
-            if(shoulder) {
+            //-----------------------------------------------------------------------
+            // Control of the left arm
+
+            bool elbowLY = (skeleton.Joints[JointType.ShoulderLeft].PositionY - skeleton.Joints[JointType.ElbowLeft].PositionY < 0.5);
+            bool elbowLZ = (skeleton.Joints[JointType.ShoulderLeft].PositionZ - skeleton.Joints[JointType.ElbowLeft].PositionZ < 0.5);
+            if(elbowLY && elbowLZ)
                 this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
-                this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
-            }
-            else {
+            else
                 this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft, 0);
-                this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight, 0);                
-            }
+
+            bool wristLY = (skeleton.Joints[JointType.ElbowLeft].PositionY - skeleton.Joints[JointType.WristLeft].PositionY < 0.5);
+            bool wristLZ = (skeleton.Joints[JointType.ElbowLeft].PositionZ - skeleton.Joints[JointType.WristLeft].PositionZ < 0.5);
+            if(wristLY && wristLZ)
+                this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
+            else
+                this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft, 0);
+
+            bool handLY = (skeleton.Joints[JointType.WristLeft].PositionY - skeleton.Joints[JointType.HandLeft].PositionY < 0.5);
+            bool handLZ = (skeleton.Joints[JointType.WristLeft].PositionZ - skeleton.Joints[JointType.HandLeft].PositionZ < 0.5);
+            if(handLY && handLZ)
+                this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+            else
+                this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft, 0);
+
+            //-----------------------------------------------------------------------
+
+            
 
 
 

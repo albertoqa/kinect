@@ -258,19 +258,25 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
-        private bool angleLeg(Skeleton skeleton, int angle) {
+        private bool angleLeg(Skeleton skeleton, double angle) {
 
-          bool check = true;
+            bool check = true;
 
-          float distA, distB;
-          distA = System.Math.Abs(skeleton.Joints[JointType.HipLeft].Position.Y - skeleton.Joints[JointType.AnkleLeft].Position.Y);
-          distB = System.Math.Abs(skeleton.Joints[JointType.HipLeft].Position.X - skeleton.Joints[JointType.AnkleLeft].Position.X);
+            float distA, distB;
+            distA = System.Math.Abs(skeleton.Joints[JointType.HipLeft].Position.Y - skeleton.Joints[JointType.AnkleLeft].Position.Y);
+            distB = System.Math.Abs(skeleton.Joints[JointType.HipLeft].Position.X - skeleton.Joints[JointType.AnkleLeft].Position.X);
 
-          
+            double segmentAngle = Math.Atan(Math.Tan(distB/distA));
 
+            double degrees = segmentAngle * (180 / Math.PI);
+            degrees = (degrees + _RotationOffset) % 360;
 
+            if(Math.Abs(angle - degrees) < 5)
+                check = true;
+            else
+                check = false;
 
-          return check;
+            return check;
 
         }
 
@@ -343,15 +349,24 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             //-----------------------------------------------------------------------
             // Control of the left leg
 
-            int angle = 40;
+            double angle = 40;
             bool legsPos = angleLeg(skeleton, angle);
 
-            // Left Leg - Change this for control my movement
-            this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
-            this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
+            // Left Leg 
+            
+            if(legsPos && (skeleton.Joints[JointType.AnkleLeft].PositionZ - skeleton.Joints[JointType.AnkeRight].PositionZ < 0.5)) {
+                this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
+                this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
+                this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
+            }
+            else {
+                this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft, 0);
+                this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft, 0);
+                this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft, 0);
+            }
 
 
+            // 
             //-----------------------------------------------------------------------
 
 

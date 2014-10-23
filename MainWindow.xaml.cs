@@ -1,7 +1,20 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="MainWindow.xaml.cs" company="Microsoft">
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
+//  Alberto Quesada Aranda - qa.alberto@gmail.com
+//
+//  Kinect P1 - Movimiento 14
+//  En pie con la pierna derecha levantada (plano YZ, XY en Kinect). El ángulo
+//  de la pierna debe ser un parámetro de entrada.
+//
+//  La función importante es < angleLeg >. Devuelve true si la posición de la 
+//  pierna izquierda es la requerida en el ejercicio. Los parámetros de entada
+//  son el skeleton leido, el ángulo que se desea alcanzar con el ejercicio
+//  y el error permitido en grados.
+//
+//  El resto de cambios realizados al código original del ejemplo son cambios 
+//  menores. Su único proposito es pintar del color pedido los Joints y Bones
+//  dependiendo de si su posición es válida/invalida, o esta por detás/delante
+//  de la posición pedida.
+//
 //------------------------------------------------------------------------------
 
 namespace Microsoft.Samples.Kinect.SkeletonBasics
@@ -54,6 +67,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
         /// <summary>
         /// Brush used for drawing joints that are currently inferred
+        /// I have changed this color to red to make a difference with the brush I use for draw
+        /// the joints that are behind the right position
         /// </summary>
         private readonly Brush inferredJointBrush = Brushes.Red;
 
@@ -259,19 +274,31 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
+        /// <summary>
+        /// Check position of the left leg
+        /// </summary>
+        /// <param name="skeleton">skeleton to check</param>
+        /// <param name="angle">angle searched</param>
+        /// <param name="allowed_error">error allowed in the comprobation</param>
         private bool angleLeg(Skeleton skeleton, double angle, double allowed_error) {
 
+            //return variable - true if position is valid, false if invalid
             bool check = true;
 
             float distA, distB;
             distA = System.Math.Abs(skeleton.Joints[JointType.HipCenter].Position.Y - skeleton.Joints[JointType.AnkleLeft].Position.Y);
             distB = System.Math.Abs(skeleton.Joints[JointType.HipCenter].Position.X - skeleton.Joints[JointType.AnkleLeft].Position.X);
 
+            // the angle I'm looking for is the formed between the HipCenter, the floor and the AnkleLeft
+            // I know the position of the HipCenter and the AnkleLeft so it can be calculed by
+            // arctang[(Hip.X-Ank.X) / (Hip.Y-Ank.Y)]
             double segmentAngle = Math.Atan(distB/distA);
             
+            // With this operation I transform the angle to degrees
             double degrees = segmentAngle * (180 / Math.PI);
             degrees = degrees % 360;
 
+            // Check if the actual angle is equal to the angle specified
             if(Math.Abs(angle - degrees) < allowed_error)
                 check = true;
             else
@@ -300,6 +327,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /*
 
             //This is the control for both arms -> It will check if the arms are open and straight.
+            //I haven't try this part actually. It is only implemented because at first I thought
+            //I had to do it, but no.
 
             //-----------------------------------------------------------------------
             // Control of the right arm
@@ -366,16 +395,18 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             //-----------------------------------------------------------------------
             // Control of the left leg
 
+            // Angle for the exercise and error allowed
             double angle = 50, allowed_error = 4;
-            bool legsPos = angleLeg(skeleton, angle, allowed_error);
+            bool legPos = angleLeg(skeleton, angle, allowed_error);
 
             // Left Leg 
-            
-            if(legsPos && (skeleton.Joints[JointType.AnkleLeft].Position.Z - skeleton.Joints[JointType.AnkleRight].Position.Z < 0.05)) {
+            // If the position of the left leg is the one we were looking for, the draw the leg in green
+            if(legPos && (skeleton.Joints[JointType.AnkleLeft].Position.Z - skeleton.Joints[JointType.AnkleRight].Position.Z < 0.05)) {
                 this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
                 this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
                 this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
             }
+            // Else, draw the leg in red
             else {
                 this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft, 0);
                 this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft, 0);
@@ -407,7 +438,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                     drawBrush = this.inferredJointBrush;
                 }
 
-                ////
+                //// Change color of the left leg Joint depending on its position.
+                // I've comented it because I check it better without change colors, but it's working right.
+                /*
                 if (joint == skeleton.Joints[JointType.AnkleLeft])
                 {
                     if (skeleton.Joints[JointType.AnkleLeft].Position.Z - skeleton.Joints[JointType.AnkleRight].Position.Z < 0.2)
@@ -455,7 +488,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                     {
                         drawBrush = this.trackedAheadJointBrush;
                     }
-                }
+                }*/
 
                 if (drawBrush != null)
                 {
@@ -484,6 +517,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// <param name="drawingContext">drawing context to draw to</param>
         /// <param name="jointType0">joint to start drawing from</param>
         /// <param name="jointType1">joint to end drawing at</param>
+        /// I have added a new parameter. It indicates if the bone should be draw in green or red, depending on its position.
+        /// The default value is 1 which indicates that the color should be green (valid position).
         private void DrawBone(Skeleton skeleton, DrawingContext drawingContext, JointType jointType0, JointType jointType1, int valid = 1)
         {
             Joint joint0 = skeleton.Joints[jointType0];

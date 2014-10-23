@@ -396,7 +396,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             // Control of the left leg
 
             // Angle for the exercise and error allowed
-            double angle = 50, allowed_error = 4;
+            double angle = 40, allowed_error = angle*0.05;
             bool legPos = angleLeg(skeleton, angle, allowed_error);
 
             // Left Leg 

@@ -272,7 +272,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             double degrees = segmentAngle * (180 / Math.PI);
             degrees = degrees % 360;
 
-            if(Math.Abs(angle - degrees) < 5)
+            if(Math.Abs(angle - degrees) < 20)
                 check = true;
             else
                 check = false;
@@ -298,6 +298,9 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
 
         /*
+
+            This is the control for both arms -> It will check if the arms are open and straight.
+
             //-----------------------------------------------------------------------
             // Control of the right arm
 
@@ -403,6 +406,8 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 {
                     drawBrush = this.inferredJointBrush;
                 }
+
+                ////
 
                 if (drawBrush != null)
                 {

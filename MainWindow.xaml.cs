@@ -264,10 +264,10 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             bool check = true;
 
             float distA, distB;
-            distA = System.Math.Abs(skeleton.Joints[JointType.HipLeft].Position.Y - skeleton.Joints[JointType.AnkleLeft].Position.Y);
-            distB = System.Math.Abs(skeleton.Joints[JointType.HipLeft].Position.X - skeleton.Joints[JointType.AnkleLeft].Position.X);
+            distA = System.Math.Abs(skeleton.Joints[JointType.HipCenter].Position.Y - skeleton.Joints[JointType.AnkleLeft].Position.Y);
+            distB = System.Math.Abs(skeleton.Joints[JointType.HipCenter].Position.X - skeleton.Joints[JointType.AnkleLeft].Position.X);
 
-            double segmentAngle = Math.Atan(Math.Tan(distB/distA));
+            double segmentAngle = Math.Atan(distB/distA);
             
             double degrees = segmentAngle * (180 / Math.PI);
             degrees = degrees % 360;
@@ -297,6 +297,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipLeft);
             this.DrawBone(skeleton, drawingContext, JointType.HipCenter, JointType.HipRight);
 
+        /*
             //-----------------------------------------------------------------------
             // Control of the right arm
 
@@ -346,6 +347,18 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
             else
                 this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft, 0);
+        */
+
+            // Left Arm
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderLeft, JointType.ElbowLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.ElbowLeft, JointType.WristLeft);
+            this.DrawBone(skeleton, drawingContext, JointType.WristLeft, JointType.HandLeft);
+
+            // Right Arm
+            this.DrawBone(skeleton, drawingContext, JointType.ShoulderRight, JointType.ElbowRight);
+            this.DrawBone(skeleton, drawingContext, JointType.ElbowRight, JointType.WristRight);
+            this.DrawBone(skeleton, drawingContext, JointType.WristRight, JointType.HandRight);
+
 
             //-----------------------------------------------------------------------
             // Control of the left leg

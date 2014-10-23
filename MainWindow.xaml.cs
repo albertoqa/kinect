@@ -55,7 +55,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
         /// <summary>
         /// Brush used for drawing joints that are currently inferred
         /// </summary>
-        private readonly Brush inferredJointBrush = Brushes.Yellow;
+        private readonly Brush inferredJointBrush = Brushes.Red;
 
         // brush used for drawing joints that are tracked and in the right position
         private readonly Brush trackedValidJointBrush = Brushes.Green;
@@ -259,7 +259,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             }
         }
 
-        private bool angleLeg(Skeleton skeleton, double angle) {
+        private bool angleLeg(Skeleton skeleton, double angle, double allowed_error) {
 
             bool check = true;
 
@@ -272,7 +272,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             double degrees = segmentAngle * (180 / Math.PI);
             degrees = degrees % 360;
 
-            if(Math.Abs(angle - degrees) < 20)
+            if(Math.Abs(angle - degrees) < allowed_error)
                 check = true;
             else
                 check = false;
@@ -299,7 +299,7 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
 
         /*
 
-            This is the control for both arms -> It will check if the arms are open and straight.
+            //This is the control for both arms -> It will check if the arms are open and straight.
 
             //-----------------------------------------------------------------------
             // Control of the right arm
@@ -366,12 +366,12 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
             //-----------------------------------------------------------------------
             // Control of the left leg
 
-            double angle = 40;
-            bool legsPos = angleLeg(skeleton, angle);
+            double angle = 50, allowed_error = 4;
+            bool legsPos = angleLeg(skeleton, angle, allowed_error);
 
             // Left Leg 
             
-            if(legsPos && (skeleton.Joints[JointType.AnkleLeft].Position.Z - skeleton.Joints[JointType.AnkleRight].Position.Z < 0.5)) {
+            if(legsPos && (skeleton.Joints[JointType.AnkleLeft].Position.Z - skeleton.Joints[JointType.AnkleRight].Position.Z < 0.05)) {
                 this.DrawBone(skeleton, drawingContext, JointType.HipLeft, JointType.KneeLeft);
                 this.DrawBone(skeleton, drawingContext, JointType.KneeLeft, JointType.AnkleLeft);
                 this.DrawBone(skeleton, drawingContext, JointType.AnkleLeft, JointType.FootLeft);
@@ -408,6 +408,54 @@ namespace Microsoft.Samples.Kinect.SkeletonBasics
                 }
 
                 ////
+                if (joint == skeleton.Joints[JointType.AnkleLeft])
+                {
+                    if (skeleton.Joints[JointType.AnkleLeft].Position.Z - skeleton.Joints[JointType.AnkleRight].Position.Z < 0.2)
+                    {
+                        drawBrush = this.trackedValidJointBrush;
+                    }
+                    else if (skeleton.Joints[JointType.AnkleLeft].Position.Z < skeleton.Joints[JointType.AnkleRight].Position.Z)
+                    {
+                        drawBrush = this.trackedBehJointBrush;
+
+                    }
+                    else
+                    {
+                        drawBrush = this.trackedAheadJointBrush;
+                    }
+                }
+                if (joint == skeleton.Joints[JointType.FootLeft])
+                {
+                    if (skeleton.Joints[JointType.FootLeft].Position.Z - skeleton.Joints[JointType.FootLeft].Position.Z < 0.2)
+                    {
+                        drawBrush = this.trackedValidJointBrush;
+                    }
+                    else if (skeleton.Joints[JointType.FootLeft].Position.Z < skeleton.Joints[JointType.FootLeft].Position.Z)
+                    {
+                        drawBrush = this.trackedBehJointBrush;
+
+                    }
+                    else
+                    {
+                        drawBrush = this.trackedAheadJointBrush;
+                    }
+                }
+                if (joint == skeleton.Joints[JointType.KneeLeft])
+                {
+                    if (skeleton.Joints[JointType.KneeLeft].Position.Z - skeleton.Joints[JointType.KneeLeft].Position.Z < 0.2)
+                    {
+                        drawBrush = this.trackedValidJointBrush;
+                    }
+                    else if (skeleton.Joints[JointType.KneeLeft].Position.Z < skeleton.Joints[JointType.KneeLeft].Position.Z)
+                    {
+                        drawBrush = this.trackedBehJointBrush;
+
+                    }
+                    else
+                    {
+                        drawBrush = this.trackedAheadJointBrush;
+                    }
+                }
 
                 if (drawBrush != null)
                 {
